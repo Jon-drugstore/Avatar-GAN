@@ -56,7 +56,7 @@ CUDA_VISIBLE_DEVICES=0 python main.py --dataset_dir=/path/to/data/ --phase=test 
 ```
 
 ## Datasets
-The datasets used in Avatar-GAN are credit to:
+The datasets used in Avatar-GAN are generated from:
 
 - `Chicago Face Dataset (CFD)`: [CFD dataset](https://chicagofaces.org/default/).
 - `Avataaars Library`: [Avataaars](https://avataaars.com/).
