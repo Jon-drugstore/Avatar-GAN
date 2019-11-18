@@ -21,7 +21,7 @@ Avatar-GAN was implemented based on Cycle-GAN proposed in paper [[Unpaired Image
 - Clone this repo:
 ```bash
 git clone https://github.com/Psyhce-mia/Avatar-GAN
-cd Avatar-GAN
+cd Avatar-GAN/GAN
 ```
 
 ### Train
