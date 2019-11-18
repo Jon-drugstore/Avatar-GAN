@@ -56,12 +56,10 @@ CUDA_VISIBLE_DEVICES=0 python main.py --dataset_dir=/path/to/data/ --phase=test 
 ```
 
 ## Datasets
-Download the datasets using the following script:
-```bash
-bash ./download_dataset.sh dataset_name
-```
-- `Chicago Face Dataset (CFD)`: 1001 images from the [CFD dataset](https://chicagofaces.org/default/).
-- `Avataaars Dataset`: 852 images from the [Avataaars](https://avataaars.com/).
+The datasets used in Avatar-GAN are credit to:
+
+- `Chicago Face Dataset (CFD)`: [CFD dataset](https://chicagofaces.org/default/).
+- `Avataaars Library`: [Avataaars](https://avataaars.com/).
 
 
 # RobotCoDraw system
