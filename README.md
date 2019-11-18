@@ -17,11 +17,10 @@ Avatar-GAN was implemented based on Cycle-GAN proposed in paper [[Unpaired Image
 
 ## Getting Started
 ### Installation
-- Install tensorflow from https://github.com/tensorflow/tensorflow
 - Clone this repo:
 ```bash
-git clone https://github.com/xhujoy/CycleGAN-tensorflow
-cd CycleGAN-tensorflow
+git clone https://github.com/Psyhce-mia/Avatar-GAN
+cd Avatar-GAN
 ```
 
 ### Train
