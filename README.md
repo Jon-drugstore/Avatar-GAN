@@ -25,13 +25,11 @@ cd Avatar-GAN
 ```
 
 ### Train
-- Download a dataset (e.g. zebra and horse images from ImageNet):
-```bash
-bash ./download_dataset.sh horse2zebra
-```
+- Download the [Avatar-GAN dataset](e.g. zebra and horse images from ImageNet) to Avatar-GAN/datasets/ folder
+
 - Train a model:
 ```bash
-CUDA_VISIBLE_DEVICES=0 python main.py --dataset_dir=horse2zebra
+python main.py --dataset_dir=horse2zebra
 ```
 - Use tensorboard to visualize the training details:
 ```bash
