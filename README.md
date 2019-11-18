@@ -10,10 +10,11 @@ TODO: bibtex of paper
 Avatar-GAN was implemented based on Cycle-GAN proposed in paper [[Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networkssee]](https://arxiv.org/pdf/1703.10593.pdf) [[github]](https://github.com/xhujoy/CycleGAN-tensorflow).
 
 ## Prerequisites
-- tensorflow r1.1
-- numpy 1.11.0
-- scipy 0.17.0
-- pillow 3.3.0
+- tensorflow-gpu 1.13.1
+- numpy 1.17.1
+- scipy 1.3.1
+- Pillow 6.1.0
+- scikit-image 0.16.2 
 
 ## Getting Started
 ### Installation
