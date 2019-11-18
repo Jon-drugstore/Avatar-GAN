@@ -39,19 +39,7 @@ tensorboard --logdir=./logs
 ### Test
 - Finally, test the model:
 ```bash
-CUDA_VISIBLE_DEVICES=0 python main.py --dataset_dir=horse2zebra --phase=test --which_direction=AtoB
-```
-
-## Training and Test Details
-To train a model,  
-```bash
-CUDA_VISIBLE_DEVICES=0 python main.py --dataset_dir=/path/to/data/ 
-```
-Models are saved to `./checkpoints/` (can be changed by passing `--checkpoint_dir=your_dir`).  
-
-To test the model,
-```bash
-CUDA_VISIBLE_DEVICES=0 python main.py --dataset_dir=/path/to/data/ --phase=test --which_direction=AtoB/BtoA
+python main.py --phase=test 
 ```
 
 ## Datasets
