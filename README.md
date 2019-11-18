@@ -43,7 +43,7 @@ python main.py --phase=test
 ```
 
 ## Datasets
-The datasets used in Avatar-GAN are generated from:
+The datasets used in Avatar-GAN were generated from:
 
 - `Chicago Face Dataset (CFD)`: [CFD dataset](https://chicagofaces.org/default/).
 - `Avataaars Library`: [Avataaars](https://avataaars.com/).
