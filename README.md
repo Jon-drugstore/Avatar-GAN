@@ -62,4 +62,4 @@ The datasets used in Avatar-GAN are credit to:
 - `Avataaars Library`: [Avataaars](https://avataaars.com/).
 
 
-# RobotCoDraw system
+# RoboCoDraw system
