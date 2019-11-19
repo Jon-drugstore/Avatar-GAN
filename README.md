@@ -5,7 +5,7 @@ Please cite our paper if this repository is useful for your project:
 
 TODO: bibtex of paper
 
-**Note**: The datasets and checkpoints in Avatar-GAN system and RoboCoDraw system are different versions. The datasets and checkpoints in Avatar-GAN system (in /GAN folder) are the same as that in the paper for reproducibility. The datasets in RoboCoDraw system were further processed (e.g. automatic background removal) for automatic drawing. 
+**Note**: The datasets and checkpoints in Avatar-GAN system and RoboCoDraw system are different versions. The datasets and checkpoints in Avatar-GAN system (code in */GAN* folder) are the same as that in the paper for reproducibility. The datasets in RoboCoDraw system were further processed (e.g. automatic background removal) for automatic drawing. 
 
 # Avatar-GAN system
 
