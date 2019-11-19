@@ -24,8 +24,8 @@ git clone https://github.com/Psyhce-mia/Avatar-GAN
 cd Avatar-GAN/GAN
 ```
 
-### Train
-- Download the [Avatar-GAN dataset](not available yet) to Avatar-GAN/datasets/ folder
+### Train 
+- Download the training dataset [Avatar-GAN dataset](not available yet) to Avatar-GAN/datasets/ folder
 
 - Train a model:
 ```bash
@@ -47,6 +47,9 @@ The datasets used in Avatar-GAN were generated from:
 
 - `Chicago Face Dataset (CFD)`: [CFD dataset](https://chicagofaces.org/default/).
 - `Avataaars Library`: [Avataaars](https://avataaars.com/).
+- `CUHK Face Sketch Database`: [CUFS](http://mmlab.ie.cuhk.edu.hk/archive/facesketch.html).
+
+Note that we have apply preprocesses to the raw datasets.
 
 
 # RoboCoDraw system
