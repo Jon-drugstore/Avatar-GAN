@@ -40,3 +40,6 @@ The datasets used in Avatar-GAN were generated from:
 
 - `Chicago Face Dataset (CFD)`: [CFD dataset](https://chicagofaces.org/default/).
 - `Avataaars Library`: [Avataaars](https://avataaars.com/).
+- `CUHK Face Sketch Database`: [CUFS](http://mmlab.ie.cuhk.edu.hk/archive/facesketch.html).
+
+Note that we have apply preprocesses to the raw datasets.
