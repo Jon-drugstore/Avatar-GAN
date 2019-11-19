@@ -49,7 +49,7 @@ The datasets used in Avatar-GAN were generated from:
 - `Avataaars Library`: [Avataaars](https://avataaars.com/).
 - `CUHK Face Sketch Database`: [CUFS](http://mmlab.ie.cuhk.edu.hk/archive/facesketch.html).
 
-Note that we have apply preprocesses to the raw datasets.
+Note that we have applied preprocesses to the raw datasets.
 
 
 # RoboCoDraw system
