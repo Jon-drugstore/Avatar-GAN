@@ -18,7 +18,7 @@ cd Avatar-GAN/GAN
 ```
 
 ### Train 
-- Download the whole [Avatar-GAN dataset](not available yet) to Avatar-GAN/datasets/ folder
+- Download the training dataset [Avatar-GAN dataset](not available yet) to Avatar-GAN/datasets/ folder
 
 - Train a model:
 ```bash
