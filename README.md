@@ -5,9 +5,11 @@ Please cite our paper if this repository is useful for your project:
 
 TODO: bibtex of paper
 
+Note that the datasets and checkpoints in Avatar-GAN system and RoboCoDraw system are different versions. The datasets and checkpoints in Avatar-GAN system (in /GAN folder) are the same as that in the paper for reproducibility. The datasets in RoboCoDraw system were further processed (e.g. automatic background removal) for automatic drawing. 
+
 # Avatar-GAN system
 
-Avatar-GAN was implemented based on Cycle-GAN proposed in paper [[Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networkssee]](https://arxiv.org/pdf/1703.10593.pdf) [[github]](https://github.com/xhujoy/CycleGAN-tensorflow).
+Avatar-GAN was implemented based on Cycle-GAN proposed in paper [[Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networkssee]](https://arxiv.org/pdf/1703.10593.pdf) [[github]](https://github.com/xhujoy/CycleGAN-tensorflow). 
 
 ## Prerequisites
 - tensorflow-gpu 1.13.1
