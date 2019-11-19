@@ -17,8 +17,8 @@ git clone https://github.com/Psyhce-mia/Avatar-GAN
 cd Avatar-GAN/GAN
 ```
 
-### Train
-- Download the [Avatar-GAN dataset](not available yet) to Avatar-GAN/datasets/ folder
+### Train 
+- Download the whole [Avatar-GAN dataset](not available yet) to Avatar-GAN/datasets/ folder
 
 - Train a model:
 ```bash
