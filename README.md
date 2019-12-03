@@ -69,15 +69,15 @@ Note that we have applied preprocesses to the raw datasets.
 git clone https://github.com/Psyhce-mia/Avatar-GAN
 ```
 ### Running the RoboCoDraw system
-To run the RoboCoDraw system with a UR robot, install `python-urx`. Move the robot end effector to the bottom left corner of the drawing surface before executing the code with the `--robot_drawing` flag:  
+To run the RoboCoDraw system with a UR robot, install `python-urx`. Ensure the robot end effector with the marker is at the bottom left corner of the drawing surface before executing the code with the `--robot_drawing` flag:  
 ```bash
 python run_RoboCoDraw.py --filename=CFD/gray1.jpg --opt_algo=rkgaLK --drawing_size=0.25 --table_surface_z=0.0 --robot_drawing 
 ```
 **Note:** 
-`--filename` sets the input image filename
-`--opt_algo` sets the optimization algorithm used for robot drawing (greedy, greedy2opt, greedyLK, rkga2opt, rkgaLK)
-`--drawing_size` sets the size of the output robot drawing (in meters)
-`--table_surface_z` sets the position of drawing table surface along the robot's z-axis
+- `--filename` sets the input image filename
+- `--opt_algo` sets the optimization algorithm used for robot drawing (greedy, greedy2opt, greedyLK, rkga2opt, rkgaLK)
+- `--drawing_size` sets the size of the output robot drawing (in meters)
+- `--table_surface_z` sets the position of drawing table surface along the robot's z-axis
 
 
 To run the RoboCoDraw system (style transfer + optimization) without executing the final robot drawing:
