@@ -2,7 +2,6 @@ from deap import base, creator, tools
 import robo_draw.img2linelist as i2l
 #import matplotlib.pyplot as plt
 import random, math, operator, numpy as np, time, copy
-import pickle
 
 
 def splitKey(individual):
