@@ -83,4 +83,4 @@ def run_bg_removal(img, save_path=None, model_type="mobile_net_model"):
         cv2.imwrite(save_path, new_img)
         # new_img_.save(save_path)
     # return new_img_
-    return new_img
+    return new_img, seg_map
