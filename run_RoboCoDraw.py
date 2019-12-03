@@ -112,7 +112,7 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser(description='')
     parser.add_argument("--filename", type=str, default='CFD/gray1.jpg', help="set input image filename")
-    parser.add_argument("--robot_drawing", action='store_true', help="set to True to execute drawing on a UR5 robot")
+    parser.add_argument("--robot_drawing", action='store_true', help="set flag to execute drawing on a UR5 robot")
     parser.add_argument("--opt_algo", type=str, default='rkgaLK', help="set optimization algorithm")
     parser.add_argument("--drawing_size", type=float, default=0.25, help="set size of robot drawing output (in m)")
     parser.add_argument("--table_surface_z", type=float, default=-0.1095, help="set position of table surface along robot z-axis")
