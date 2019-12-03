@@ -488,19 +488,3 @@ def runAlgo(draw_list, home=(0, 256), test=False, heuristics='None'):
         print('Path Fitness Cost: ', final_dist)
         return final_list
 
-if __name__ == "__main__":
-    start = time.time()
-
-    filename = 'input2_FDoG.jpg'
-    h = 1
-    draw_list = i2l.img2lines(filename, approx_img_h=h * 256.0)
-    final_list, total_dist, opt_dist, LK_dist = runAlgo(draw_list, home=(0, 256 * h), test=True, heuristics='LK')
-    tour_len = len(final_list)
-
-    print("Time Elapsed: ", time.time() - start)
-    print('Lines Drawn: ', tour_len)
-    print('Air Distance: ', total_dist)
-    print('Opt Distance: ', opt_dist)
-    print('LK Distance: ', LK_dist)
-
-    i2l.showResult(final_list, filename, 0.20, 0.005, approx_img_h=h * 256.0)
