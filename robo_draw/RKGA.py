@@ -708,22 +708,3 @@ class TSP:
             return best
         return best_ind
 
-
-
-if __name__ == "__main__":
-    start = time.time()
-
-    filename = 'input2_FDoG.jpg'
-    h = 1
-    draw_list = i2l.img2lines(filename, approx_img_h=h * 256.0)
-    final_list = runAlgo(draw_list, home=(0, h * 256))
-    tour_len = len(final_list)
-
-    print("Time Elapsed: ", time.time() - start)
-    #plt.show()
-    i2l.showResult(final_list, filename, 0.20, 0.005, approx_img_h=h * 256.0)
-
-    print('lines drawn: ', tour_len)
-
-    with open('outfile_anime', 'wb') as fp:
-        pickle.dump(final_list, fp)
