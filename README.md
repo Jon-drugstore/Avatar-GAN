@@ -64,7 +64,7 @@ Note that we have applied preprocesses to the raw datasets.
 
 ## Getting Started
 ### Installation
-- Clone this repo:
+Clone this repo:
 ```bash
 git clone https://github.com/Psyhce-mia/Avatar-GAN
 ```
@@ -80,7 +80,7 @@ python run_RoboCoDraw.py --filename=CFD/gray1.jpg --opt_algo=rkgaLK --drawing_si
 - `--table_surface_z` sets the position of drawing table surface along the robot's z-axis
 
 
-To run the RoboCoDraw system (style transfer + optimization) without executing the final robot drawing:
+To run the RoboCoDraw system (style transfer + optimization) without executing the final robot drawing, run the following:
 ```bash
 python run_RoboCoDraw.py --filename=CFD/gray1.jpg --opt_algo=rkgaLK
 ```
