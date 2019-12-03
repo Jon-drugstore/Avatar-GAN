@@ -701,7 +701,7 @@ class TSP:
         best_ind = tools.selBest(pop, 1)[0]
         #plt.plot(plt_data)
         #plt.draw()
-        print("Best individual: %s" % (self.toolbox.evaluate(best_ind)))
+        print("Path Fitness Cost: %s" % (self.toolbox.evaluate(best_ind)))
 
         if test:
             return best
