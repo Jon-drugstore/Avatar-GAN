@@ -17,7 +17,7 @@ img_home = (0, 256)     # pixel coordinates of image home
 paperdist = 0.015       # distance for marker lift
 
 
-def drawShape(rob, final_list, img_home, size = 0.25):
+def drawShape(rob, final_list, img_home, size = 0.25, table_surface_z = -0.1095):
     ### Set robot parameters
     rad = 0.001         # blending radius
     thres = 0.0015      # waypoint threshold
@@ -27,8 +27,8 @@ def drawShape(rob, final_list, img_home, size = 0.25):
     ### Set the start_pose (corresponding to bottom left corner of drawing) to be
     ### directly below the robot's current position
     pose = rob.getl()   # robot's current position  
-    pose[2] = -0.1095   # set to drawing surface height
-    pose[3] = 2.2       # adjust orientation of marker end effector 
+    pose[2] = table_surface_z   # set to drawing surface height
+    pose[3] = 2.2               # adjust orientation of marker end effector 
     pose[4] = 2.2
     pose[5] = 0
     start_pose = pose[:]
@@ -126,7 +126,7 @@ def drawShape(rob, final_list, img_home, size = 0.25):
         traceback.print_exc()
 
 
-def run_robo_draw(draw_list, rob, drawing_size, opt_algo='rkgaLK'):
+def run_robo_draw(draw_list, rob, drawing_size, table_surface_z, opt_algo='rkgaLK'):
     
     try:
         start = time.time()
@@ -165,7 +165,7 @@ def run_robo_draw(draw_list, rob, drawing_size, opt_algo='rkgaLK'):
         start = time.time()
         while True:
             try:
-                drawShape(rob, final_list, img_home, size=drawing_size)
+                drawShape(rob, final_list, img_home, size=drawing_size, table_surface_z = table_surface_z)
                 print('No. of lines: ', len(final_list))
                 print("Optimization Time: ", opt_time)
                 print("Drawing Time: ", time.time() - start)
