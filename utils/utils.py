@@ -4,7 +4,6 @@ import scipy.misc
 import numpy as np
 import copy
 import cv2
-import dlib
 
 try:
     _imread = scipy.misc.imread
@@ -12,42 +11,6 @@ except AttributeError:
     from imageio import imread as _imread
 
 pp = pprint.PrettyPrinter()
-
-
-
-LEFT_EYE_INDICES = [36, 37, 38, 39, 40, 41]
-RIGHT_EYE_INDICES = [42, 43, 44, 45, 46, 47]
-
-def extract_eye(shape, eye_indices):
-    points = map(lambda i: shape.part(i), eye_indices)
-    return list(points)
-
-def extract_eye_center(shape, eye_indices):
-    points = extract_eye(shape, eye_indices)
-    xs = map(lambda p: p.x, points)
-    ys = map(lambda p: p.y, points)
-    return sum(xs) // 6, sum(ys) // 6
-
-def extract_left_eye_center(shape):
-    return extract_eye_center(shape, LEFT_EYE_INDICES)
-
-def extract_right_eye_center(shape):
-    return extract_eye_center(shape, RIGHT_EYE_INDICES)
-
-def angle_between_2_points(p1, p2):
-    x1, y1 = p1
-    x2, y2 = p2
-    tan = (y2 - y1) / (x2 - x1)
-    return np.degrees(np.arctan(tan))
-
-def get_rotation_matrix(p1, p2):
-    angle = angle_between_2_points(p1, p2)
-    x1, y1 = p1
-    x2, y2 = p2
-    xc = (x1 + x2) // 2
-    yc = (y1 + y2) // 2
-    M = cv2.getRotationMatrix2D((xc, yc), angle, 1)
-    return M
 
 def ajust_lighting(image, gamma=1.8, save_path=None):
     if isinstance(image, str):
@@ -68,12 +31,7 @@ def resize_image(image, save_path=None):
     scale = 300.0/max(h,w)
     dim = (int(w*scale),int(h*scale))
     image = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)
-
-    # initialize dlib's face detector (HOG-based) and then create
-    # the facial landmark predictor and the face aligner
-    detector = dlib.get_frontal_face_detector()
-    predictor = dlib.shape_predictor('checkpoint/facedetect/shape_predictor_68_face_landmarks.dat')
-
+    
     # padding
     (h, w) = image.shape[:2]
     dim_diff = h-w
@@ -86,16 +44,6 @@ def resize_image(image, save_path=None):
     image = cv2.copyMakeBorder(image, 0, bottom, 0, right, cv2.BORDER_CONSTANT, value=[255,255,255])
     (h, w) = image.shape[:2]
     dim = (w,h)
-
-    # Rotate if frontal image is detected
-    dets = detector(image, 1)
-    if len(dets) == 1:
-        shape = predictor(image, dets[0])
-        left_eye = extract_left_eye_center(shape)
-        right_eye = extract_right_eye_center(shape)
-
-        M = get_rotation_matrix(left_eye, right_eye)
-        image = cv2.warpAffine(image, M, (w,h), flags=cv2.INTER_CUBIC, borderValue=(255,255,255))
 
     #Face detection and crop
     # load our serialized model from disk
