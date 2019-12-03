@@ -59,7 +59,7 @@ def ajust_lighting(image, gamma=1.8, save_path=None):
         cv2.imwrite(save_path, image)
     return image
 
-def adjust_image(image, gamma=1.0, val_adj=210, sat_adj=70, save_path=None):
+def resize_image(image, save_path=None):
     if isinstance(image, str):
         image = cv2.imread(image, flags=1)
         
@@ -147,47 +147,57 @@ def adjust_image(image, gamma=1.0, val_adj=210, sat_adj=70, save_path=None):
     image = cv2.warpAffine(image,M,dim, borderValue=(255,255,255))
     lastimg = image[0:256,0:256]
     
+    if save_path is not None:
+        cv2.imwrite(save_path, lastimg)
+    return lastimg, int(top)
+    
+def adjust_image(image, gamma=1.0, val_adj=210, sat_adj=70, save_path=None):
     # color adjustments
     inv_gamma = 1.0 / gamma
     table = np.array([((i / 255.0) ** inv_gamma) * 255 for i in np.arange(0, 256)]).astype(dtype=np.uint8)
-    lastimg = cv2.LUT(lastimg, table)
+    lastimg = cv2.LUT(image, table)
     
     imghsv = cv2.cvtColor(lastimg, cv2.COLOR_BGR2HSV).astype("float32")
     (h, s, v) = cv2.split(imghsv)
     s[s<sat_adj] = sat_adj
     v[v>val_adj] = val_adj
-    #s = np.clip(s,0,255)
     imghsv = cv2.merge([h,s,v])
     lastimg = cv2.cvtColor(imghsv.astype("uint8"), cv2.COLOR_HSV2BGR)
-
     
     if save_path is not None:
         cv2.imwrite(save_path, lastimg)
-    return lastimg, int(top)
+    return lastimg
 
 
-def convert_grayscale(img, top, med_value=[135,150], save_path=None):
+def convert_grayscale(img, top, med_value=[135,150], save_path=None, brightness=False):
     if isinstance(img, str):
         img = cv2.imread(img, flags=1)
     # convert to gray scale
     gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    
     # adjust contrast
     clahe = cv2.createCLAHE(clipLimit=1.0, tileGridSize=(12,12))
     gray_image = clahe.apply(gray_image)
     # convert uint8 format
     gray_image = gray_image.astype(dtype=np.uint8)
-    # adjust brightness
-    orig_med = int(median([gray_image[i,j] for i in range(70,186) for j in range(top, 256-top)]))
-    if orig_med < med_value[0]:
-        bright_diff = med_value[0]-orig_med
-        gray_image[gray_image>255-bright_diff] = 255-bright_diff
-    elif orig_med > med_value[1]:
-        bright_diff = med_value[1]-orig_med
-        gray_image[gray_image<-bright_diff] = -bright_diff   
+        
+    if brightness:
+        # adjust brightness
+        orig_med = int(median([gray_image[i,j] for i in range(70,186) for j in range(top, 256-top)]))
+        if orig_med < med_value[0]:
+            bright_diff = med_value[0]-orig_med
+            gray_image[gray_image>255-bright_diff] = 255-bright_diff
+        elif orig_med > med_value[1]:
+            bright_diff = med_value[1]-orig_med
+            gray_image[gray_image<-bright_diff] = -bright_diff 
+        else:
+            bright_diff = 0     
+        gray_image = gray_image + bright_diff    
+        gray_image[gray_image>240+bright_diff] = 255
     else:
-        bright_diff = 0     
-    gray_image = gray_image + bright_diff    
-    gray_image[gray_image>254+bright_diff] = 255
+        bright_diff = 0 
+        # convert uint8 format
+        gray_image = gray_image.astype(dtype=np.uint8)
     
     if save_path is not None:
         cv2.imwrite(save_path, gray_image)
