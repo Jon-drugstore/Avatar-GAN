@@ -197,9 +197,10 @@ def addJunc(jdraw_list, junc):
                 d0y = y - y0
                 d0.append(d0x * d0x + d0y * d0y)
             si = np.argsort(d0)
-            if d0[si[0]] < 15:
-                line = np.append([np.array([jpoints[si[0]]])], line, axis=0)
-                tr_list.append(si[0])
+            if len(si) > 0:
+                if d0[si[0]] < 15:
+                    line = np.append([np.array([jpoints[si[0]]])], line, axis=0)
+                    tr_list.append(si[0])
             if len(si) > 1:
                 if d0[si[1]] < 15:
                     line = np.append(line, [np.array([jpoints[si[1]]])], axis=0)
