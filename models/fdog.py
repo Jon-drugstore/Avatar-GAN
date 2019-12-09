@@ -12,14 +12,14 @@ sigma_ratio = 3
 # sigma_ratio = 3
 stepsize = 1.0
 # sigma_m = 3.0 # degree of coherence
-sigma_m = 2.0
+sigma_m = 3.0
 # sigma_c = 1.0 # line width
-sigma_c = 1.0
+sigma_c = 0.5
 # rho = 0.997   # noise
-rho = 0.996
+rho = 0.997
 # original tau = 0.8
 #tau = 0.936 # threshold
-tau = 0.98
+tau = 0.95
 
 ETF_kernel = 5
 ETF_iteration = 0
@@ -33,29 +33,15 @@ def rotate_flow(grad_field, theta=90):
 
     cos = math.cos
     sin = math.sin
-    asarray = np.asarray
+    array = np.array
     for i in range(grad_field.shape[0]):
         for j in range(grad_field.shape[1]):
             grad = grad_field[i, j]
             rx = grad[0] * cos(theta) - grad[1] * sin(theta)
             ry = grad[1] * cos(theta) + grad[0] * sin(theta)
-            flow_field[i, j] = asarray([rx, ry, 0])
+            flow_field[i, j] = array([rx, ry])
     # pdb.set_trace()
     return flow_field
-
-
-'''def combine_img(rawimg):
-    img = cv2.imread(rawimg, CV_LOAD_IMAGE_GRAYSCALE)
-    result = np.zeros(img.shape, dtype=float)
-    for y in range(img.shape[0]):
-        for x in range(img.shape[1]):
-            h = result[y, x]
-
-            if h == 0:
-                img[y, x] = 0
-    cv2.GaussianBlur(img, (3, 3), 0)
-    return True'''
-
 
 def binary_thresholding(s_dog):
     h_img = np.zeros(s_dog.shape, dtype=float)
@@ -63,55 +49,64 @@ def binary_thresholding(s_dog):
     h_img[s_dog >= tau] = 255
     return h_img
 
-'''
-def compute_phi(t_cur_x, t_cur_y):
-    phi = 1
-    if np.dot(t_cur_x, t_cur_y) < 0:
-        phi = -1
-    return phi
-
+def compute_phi(tx_0, tx_1, ty_0, ty_1): 
+    if tx_0*ty_0 + tx_1*ty_1 < 0:
+        return -1
+    else:
+        return 1
 
 def compute_ws(i, j, r, c, kernel):
-    ws = 0
-    if cv2.norm(np.asarray([i, j]), np.asarray([r, c])) < kernel:
-        ws = 1
-    return ws
-
+    a = i-r
+    b = j-c
+    if a*a + b*b < kernel*kernel:
+        return 1
+    else:
+        return 0
 
 def compute_wm(gradmag_x, gradmag_y):
-    wm = (1 + np.tanh(gradmag_y - gradmag_x)) / 2
-    return wm
+    return (1 + np.tanh(gradmag_y - gradmag_x)) / 2
 
+def compute_wd(tx, ty):
+    return abs(np.dot(tx,ty))
 
-def compute_wd(vec_x, vec_y):
-    wd = abs(np.dot(vec_x, vec_y))
-    return wd
+def refine_vec(flow_field, i, j, kernel, gradientMag, ff0, ff1):
+    
+    min_c, max_c = j-kernel, j+kernel+1
+    min_r, max_r = i-kernel, i+kernel+1
+    if min_c < 0: min_c = 0
+    if min_r < 0: min_r = 0
+    if max_c > ff1: max_c = ff1
+    if max_r > ff0: max_r = ff0
+    rr, cc = max_r-min_r, max_c-min_c
+    rc = rr*cc
+    ty = flow_field[min_r:max_r,min_c:max_c].reshape(rc,2)
+    flow_dot = np.dot(ty,flow_field[i, j])
+    
+    phi = np.ones((rc,1))
+    phi[flow_dot<0] = -1
+    r = (i-np.arange(min_r, max_r)).reshape(rr,1)
+    c = (j-np.arange(min_c, max_c)).reshape(1,cc)
+    w_s = np.zeros((rc,1))
+    w_s[(r*r+c*c).reshape(rc,1) < kernel*kernel] = 1
+    w_m = compute_wm(gradientMag[i, j], gradientMag[min_r:max_r,min_c:max_c]).reshape(rc,1)
+    w_d = abs(flow_dot).reshape(rc,1)
+    
+    refined_vec = cv2.normalize(np.sum(phi * w_s * w_m * w_d * ty, axis=0), None).reshape(2, )
+    return refined_vec
 
-
-def refine_vec(flow_field, i, j, kernel):
-    t_cur_x = flow_field[i, j]
-    t_new = np.zeros(2, )
-    for r in range(i - kernel, i + kernel + 1):
-        for c in range(j - kernel, j + kernel + 1):
-            if r < 0 or r >= flow_field.shape[0] or c < 0 or c >= flow_field.shape[1]:
-                continue
-
-            t_cur_y = flow_field[r, c]
-            phi = compute_phi(t_cur_x, t_cur_y)  # angle < 90, otherwise change direction
-            w_s = compute_ws(i, j, r, c, kernel)  # spatial weight
-            w_m = compute_wm(cv2.norm(gradientMag[i, j]), cv2.norm(gradientMag[r, c]))  # magnitude weight
-            w_d = compute_wd(t_cur_x, t_cur_y)
-            t_new = np.add(t_new, (phi * w_s * w_m * w_d * t_cur_y))
-
-    refined_vec = cv2.normalize(t_new, None).reshape(2, )
-    return refined_vec'''
-
+def refine_etf(flow_field, gradientMag, kernel=5):
+    #print('Refining flow Field ...')
+    # equation(1) : smooth directions
+    refined_field = np.zeros(flow_field.shape, dtype=float)
+    ff0 = flow_field.shape[0]
+    ff1 = flow_field.shape[1]
+    return np.array([[refine_vec(flow_field, i, j, kernel, gradientMag, ff0, ff1) for j in range(ff1)] for i in range(ff0)])
 
 def initial_etf(rawimg):
     # print('Getting initial flow Field ...')
     # Gradient Vector Field  -> rotate 90 -> Edge Tangent Flow (ETF)
     normalize = cv2.normalize
-    asarray = np.asarray
+    array = np.array
     
     img = rawimg
     img_norm = normalize(img, None, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_64FC1)
@@ -120,27 +115,17 @@ def initial_etf(rawimg):
 
     gradient_mag0 = cv2.magnitude(sobel_j, sobel_i)
     gradient_mag = normalize(gradient_mag0, None, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX)
-    gradient_field = np.zeros(tuple(img.shape[:2]) + tuple([3]), dtype=float)
+    gradient_field = np.zeros(tuple(img.shape[:2]) + tuple([2]), dtype=float)
     # pdb.set_trace()
     for i in range(img.shape[0]):
         for j in range(img.shape[1]):
             gj = sobel_j[i, j]
             gi = sobel_i[i, j]
-            gradient_field[i, j] = normalize(asarray([gi[0], gj[0], 0]), None).reshape(3, )
+            gradient_field[i, j] = normalize(array([gi[0], gj[0]]), None).reshape(2, )
 
     flow_field = rotate_flow(gradient_field, 90)
-    return flow_field, gradient_mag
+    return flow_field, np.linalg.norm(gradient_mag, axis=2)
 
-
-'''def refine_etf(flow_field, kernel=5):
-    print('Refining flow Field ...')
-    # equation(1) : smooth directions
-    refined_field = np.zeros(flow_field.shape, dtype=float)
-    for i in range(flow_field.shape[0]):
-        for j in range(flow_field.shape[1]):
-            update_vec = refine_vec(flow_field, i, j, kernel)
-            refined_field[i, j] = update_vec
-    return refined_field'''
 
 
 def gaussian(x, mu, sigma):
@@ -168,7 +153,7 @@ def gradient_dog(rawimg, flow_field):
         img = cv2.imread(rawimg, 0)  # gray scale
     else:
         img = rawimg
-    img = img.astype(float) / 255
+    img = img/ 255.0
     t_dog = np.zeros(img.shape, dtype=float)
 
     sigma_s = sigma_ratio * sigma_c  # 1.6 * 1
@@ -184,26 +169,28 @@ def gradient_dog(rawimg, flow_field):
             gau_c_weight_acc = 0
             gau_s_weight_acc = 0
 
-            direction = (-flow_field[i, j][0], flow_field[i, j][1])  # (x,y) rotate 90, (-y, x)
-            if direction[0] == 0 and direction[1] == 0:
+            x, y = flow_field[i, j]  # (x,y) rotate 90, (-y, x)
+            d0, d1 = -x, y
+            if d0 == 0 and d1 == 0:
                 continue
 
             for pix in range(-t + 1, t):
                 # image value
 
-                row = i + int((direction[1] * pix) + 0.5)
-                col = j + int((direction[0] * pix) + 0.5)
+                row = i + int((d1 * pix) + 0.5)
+                col = j + int((d0 * pix) + 0.5)
                 if col > img_1 - 1 or col < 0 or row > img_0 - 1 or row < 0:
                     continue
 
                 value = img[row, col]
 
                 # kernel weight
-                gau_s_weight = gau_s[abs(pix)]
-                if abs(pix) >= len(gau_c):
+                abs_pix = abs(pix)
+                gau_s_weight = gau_s[abs_pix]
+                if abs_pix >= len(gau_c):
                     gau_c_weight = 0
                 else:
-                    gau_c_weight = gau_c[abs(pix)]
+                    gau_c_weight = gau_c[abs_pix]
                 # sum of kernel weight * image value
                 gau_c_acc += value * gau_c_weight
                 gau_s_acc += value * gau_s_weight
@@ -232,55 +219,60 @@ def flow_dog(rawimg, t_dog, flow_field):
         img = cv2.imread(rawimg, 0)  # gray scale
     else:
         img = rawimg
-    img = img.astype(float) / 255
+    img = img / 255.0
     f_dog = np.zeros(img.shape, dtype=float)
     gau_m = gaussian_kernal(sigma_m)
-    s = len(gau_m)
+    gau_m_0 = gau_m[0] 
     
-    #rnd = np.round
+    nparray = np.array
+    npdot = np.dot
     p = 10**5
     tanh = np.tanh
     img_0, img_1 = img.shape[:2]
-    for i in range(t_dog.shape[0]):
-        for j in range(t_dog.shape[1]):
-
-            gau_m_acc = -gau_m[0] * t_dog[i, j]
-            gau_m_weight_acc = -gau_m[0]
+    i_max, j_max = t_dog.shape[:2]
+    for i in range(i_max):
+        for j in range(j_max):
 
             row0 = i
             col0 = j
-            for pix in range(0, s):
-                #row = rnd(row0).astype(int)
-                #col = rnd(col0).astype(int)
+            gau_m_acc = -gau_m_0 * t_dog[i, j]
+            gau_m_weight_acc = -gau_m_0
+            
+            for weight in gau_m:
                 row = int(row0+0.5)
                 col = int(col0+0.5)
                 if col > img_1 - 1 or col < 0 or row > img_0 - 1 or row < 0:
                     break
 
-                direction = (-flow_field[row, col][0], -flow_field[row, col][1])
-                if direction[0] == 0 and direction[1] == 0:
+                d0, d1 = -flow_field[row, col]
+                if d0 == 0 and d1 == 0:
                     break
 
-                value = t_dog[row, col]
-                weight = gau_m[abs(pix)]
+                row0 += d0
+                col0 += d1
 
-                gau_m_acc += value * weight
-                gau_m_weight_acc += weight
-
-                row0 += direction[0]
-                col0 += direction[1]
+                gau_m_acc += t_dog[row, col] * weight
+                gau_m_weight_acc += weight                
                 
             if gau_m_weight_acc==0:
-                f_dog[i, j] = 1
-            elif (gau_m_acc / gau_m_weight_acc) > 0:
-                f_dog[i, j] = 1
+                f_dog[i, j] = 1                 ### results for ij loop
             else:
-                f_dog[i, j] = 1 + tanh(gau_m_acc / gau_m_weight_acc)
+                gau_ratio = gau_m_acc / gau_m_weight_acc
+                if gau_ratio > 0:
+                    f_dog[i, j] = 1
+                else:
+                    f_dog[i, j] = 1 + tanh(gau_ratio)
 
     f_dog = cv2.normalize(f_dog, None, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX)
     return f_dog
 
-
+def genCLD(gray, flow_field):
+    t_dog = gradient_dog(gray, flow_field)
+    s_dog = flow_dog(gray, t_dog, flow_field)
+    s_dog_2 = cv2.normalize(s_dog, None, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX)
+    final = binary_thresholding(s_dog_2)
+    return final
+    
 def run_fdog(img, save_path=None, shade=False):
     if isinstance(img, str):
         img = cv2.imread(img, flags=1)
@@ -293,37 +285,55 @@ def run_fdog(img, save_path=None, shade=False):
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     gray = cv2.normalize(gray, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX)
 
+    #edges = cv2.Canny(gray,100,150)
+    #cv2.imshow('image',edges)
+    #cv2.waitKey(0)
+    #cv2.destroyAllWindows()
+
     flow_field, gradient_mag = initial_etf(img)
-    t_dog = gradient_dog(img[:, :, 0], flow_field)
-    s_dog = flow_dog(img[:, :, 0], t_dog, flow_field)
-    s_dog_2 = cv2.normalize(s_dog, None, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX)
-    final = binary_thresholding(s_dog_2)
+    for i in range(1):
+        flow_field = refine_etf(flow_field, gradient_mag)
+    gray_copy = gray.copy()
+    cld = genCLD(gray_copy, flow_field)
+    for i in range(0):
+        gray_copy[cld < 1] = 0
+        gray_copy = cv2.GaussianBlur(gray_copy,(3,3),0)
+        cld = genCLD(gray_copy, flow_field)
+        
+    '''    
+    cv2.imshow('image',cld)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
     
-    thres = 180
-    #final = cv2.morphologyEx(final, cv2.MORPH_CLOSE, np.ones((3,3)))
-    final = cv2.GaussianBlur(final,(7,7),0)
-    final[final > thres] = 255
-    #final[final <= thres] = 0
+    cv2.imshow('image',gray_copy)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    '''
     
-    # noise removal
-    #final = cv2.morphologyEx(final, cv2.MORPH_CLOSE, np.ones((3,3)))
+    #'''
+    thres = 200
+    #cld = cv2.morphologyEx(cld, cv2.MORPH_CLOSE, np.ones((3,3)))
+    cld = cv2.GaussianBlur(cld,(3,3),0)
+    cld[cld > thres] = 255
+    #cld[cld <= thres] = 0
+    #'''
     
     # fill hair  
     if shade:  
-        fill = np.zeros(final.shape)
+        fill = np.zeros(cld.shape)
         x, y = (gray[70:186,70:186] < 240).nonzero()
         val = np.median(gray[70+x, 70+y]) - 15
         #print(val)
         ret, binary = cv2.threshold(gray, val, 255, cv2.THRESH_BINARY_INV)
         #ret, binary = cv2.threshold(gray, 100, 255, cv2.THRESH_BINARY_INV)
         binary = cv2.morphologyEx(binary, cv2.MORPH_OPEN, np.ones((5,5)))
-        final[binary > 0] = 0
+        cld[binary > 0] = 0
     
     
     if save_path is not None:
-        cv2.imwrite(save_path, final)
+        cv2.imwrite(save_path, cld)
 
-    return final
+    return cld
     
 if __name__ == "__main__":
-    run_fdog("../static/input_avatar.jpg", "../static/input_FDoG.jpg")
+    run_fdog("../static/gray1_avatar.jpg", "../static/gray1_FDoG.jpg")
