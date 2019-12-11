@@ -1,5 +1,5 @@
 # Avatar-GAN (RoboCoDraw)
-![Image of Yaktocat](https://octodex.github.com/images/yaktocat.png)
+![Image of Yaktocat](https://github.com/Psyche-mia/Avatar-GAN/blob/master/pics/abstract.pdf)
 This is the open-source repository of the project Avatar-GAN from the paper **RoboCoDraw: Robotic Avatar Drawing with GAN-based Style Transfer andTime-efficient Path Optimization** published in AAAI 2020.
 
 Please cite our paper if this repository is useful for your project:
