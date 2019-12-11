@@ -58,7 +58,7 @@ Note that we have applied preprocesses to the raw datasets.
 
 
 # RoboCoDraw system
-
+![Set-up](https://github.com/Psyche-mia/Avatar-GAN/blob/master/pics/exp_setup.jpg)
 ## Prerequisites
 - tensorflow 1.13.1
 - numpy 1.17.1
@@ -87,3 +87,4 @@ To run the RoboCoDraw system (style transfer + optimization) without executing t
 ```bash
 python run_RoboCoDraw.py --filename=CFD/gray1.jpg --opt_algo=rkgaLK
 ```
+![Results](https://github.com/Psyche-mia/Avatar-GAN/blob/master/pics/robot_arm_draw.png)
