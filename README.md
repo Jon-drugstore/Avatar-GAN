@@ -3,7 +3,7 @@
 This is the open-source repository of the project Avatar-GAN from the paper **RoboCoDraw: Robotic Avatar Drawing with GAN-based Style Transfer andTime-efficient Path Optimization** published in AAAI 2020.
 
 Please cite our paper if this repository is useful for your project:
-
+```
 @misc{wang2019robocodraw,
     title={RoboCoDraw: Robotic Avatar Drawing with GAN-based Style Transfer and Time-efficient Path Optimization},
     author={Tianying Wang and Wei Qi Toh and Hao Zhang and Xiuchao Sui and Shaohua Li and Yong Liu and Wei Jing},
@@ -12,7 +12,7 @@ Please cite our paper if this repository is useful for your project:
     archivePrefix={arXiv},
     primaryClass={cs.RO}
 }
-
+```
 **Note**: The datasets and checkpoints in Avatar-GAN system and RoboCoDraw system are **different versions**. The datasets and checkpoints in Avatar-GAN system (code in */GAN* folder) are the same as that in the paper for reproducibility. The datasets in RoboCoDraw system were further processed (e.g. automatic background removal) for automatic drawing. 
 
 Feel free to contact Tianying (wty00678@gmail.com) or Wei Qi (toh_wei_qi@scei.a-star.edu.sg).
